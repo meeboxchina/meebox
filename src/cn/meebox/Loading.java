@@ -1,14 +1,15 @@
 package cn.meebox;
 
 import cn.meebox.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -43,7 +44,6 @@ public class Loading extends Activity {
 	/**
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
-	private SystemUiHider mSystemUiHider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,14 @@ public class Loading extends Activity {
 
 		setContentView(R.layout.loading);
 		
+		Button btnLogin = (Button)findViewById(R.id.btnLogin);//获取按钮资源    
+		btnLogin.setOnClickListener(new Button.OnClickListener(){//创建监听    
+            public void onClick(View v) {    
+            	Intent i = new Intent();
+            	i = new Intent(Loading.this, MainActivity.class); 
+            	startActivity(i);
+            }    
+  
+        });    
 	}
-
 }
