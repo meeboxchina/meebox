@@ -22,7 +22,7 @@
         android:layout_below="@+id/tvLogo"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
-        android:text="Username" />
+        android:text="Username :" />
 
     <EditText
         android:id="@+id/etUsername"
@@ -33,7 +33,10 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="40dp"
         android:ems="10"
-        android:inputType="textEmailAddress" >
+        android:hint="Please input your email or mobile"
+        android:inputType="textEmailAddress"
+        android:maxLines="1" >
+
         <requestFocus />
     </EditText>
 
@@ -44,7 +47,7 @@
         android:layout_alignLeft="@+id/tvUsername"
         android:layout_below="@+id/etUsername"
         android:layout_marginTop="14dp"
-        android:text="Password" />
+        android:text="Password :" />
 
 
     <EditText
@@ -65,5 +68,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:text="Login" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="68dp"
+        android:text="MeeBox 安全云存储"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="12sp" />
     
 </RelativeLayout>
