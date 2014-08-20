@@ -24,6 +24,7 @@ import android.net.ParseException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 public class Loading extends Activity {
 	private EditText login_username;
 	private EditText login_password;
+	private Handler handler = null; 
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -82,10 +84,23 @@ public class Loading extends Activity {
 		
 		login_username=(EditText)findViewById(R.id.etUsername);
         login_password=(EditText)findViewById(R.id.etPassword);
+        
+        handler = new Handler() {  
+            public void handleMessage(Message msg) {  
+                super.handleMessage(msg);  
+                if (msg.what == 0) {  
+                    txtResult.append("\nBegin test >>\n");  
+                } else if (msg.what == 1) {  
+                    txtResult.append(msg.obj.toString());  
+                } else if (msg.what == 2) {  
+                    txtResult.append("\n<<End test\n");  
+                }  
+            }  
+        };  
 	}
 	
 	private void login(){
-        String httpUrl="http://192.168.1.102:8080/web-test/login.jsp";
+        String httpUrl="http://www.baidu.com";
         HttpPost httpRequest=new HttpPost(httpUrl);
         List<NameValuePair> params=new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username",login_username.getText().toString().trim()));
@@ -129,6 +144,31 @@ public class Loading extends Activity {
         {
             Toast.makeText(Loading.this, "登录失败！", Toast.LENGTH_SHORT).show();
         }
+        
+        
+        new Thread(new Runnable() {  
+            @Override  
+            public void run() {  
+                Message m = new Message();  
+                m.what = 0;  
+                handler.sendMessage(m);  
+                //  
+                m = new Message();  
+                m.what = 1;  
+                String url = "http://www.baidu.com/";  
+                try {  
+                    m.obj = Jsoup.connect(url).get().toString();  
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                    // m.obj = e.getMessage();  
+                }  
+                handler.sendMessage(m);  
+                //  
+                m = new Message();  
+                m.what = 2;  
+                handler.sendMessage(m);  
+            }  
+        }).start();
          
     }
 }
