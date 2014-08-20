@@ -2,7 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0046b6" >
+    android:background="#0046b6"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="0dp"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp" >
 
     <TextView
         android:id="@+id/tvLogo"
@@ -22,20 +29,24 @@
         android:layout_below="@+id/tvLogo"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
-        android:text="Username :" />
+        android:text="Username :"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvUsername"
         android:layout_alignBottom="@+id/tvUsername"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="50dp"
+        android:layout_toRightOf="@id/tvUsername"
+        android:background="@drawable/edittext_shape"
         android:ems="10"
-        android:hint="Please input your email or mobile"
+        android:height="100dp"
         android:inputType="textEmailAddress"
-        android:maxLines="1" >
+        android:maxLines="1"
+        android:textSize="20sp" >
 
         <requestFocus />
     </EditText>
@@ -47,8 +58,8 @@
         android:layout_alignLeft="@+id/tvUsername"
         android:layout_below="@+id/etUsername"
         android:layout_marginTop="14dp"
-        android:text="Password :" />
-
+        android:text="Password :"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -57,7 +68,10 @@
         android:layout_alignBaseline="@+id/tvPassword"
         android:layout_alignBottom="@+id/tvPassword"
         android:layout_alignLeft="@+id/etUsername"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/edittext_shape"
         android:ems="10"
+        android:height="30dp"
         android:inputType="textPassword" />
     
     <Button
