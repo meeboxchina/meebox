@@ -30,7 +30,8 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
         android:text="Username :"
-        android:textSize="18sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="17sp" />
 
     <EditText
         android:id="@+id/etUsername"
@@ -46,6 +47,7 @@
         android:height="100dp"
         android:inputType="textEmailAddress"
         android:maxLines="1"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" >
 
         <requestFocus />
@@ -59,7 +61,8 @@
         android:layout_below="@+id/etUsername"
         android:layout_marginTop="14dp"
         android:text="Password :"
-        android:textSize="18sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="17sp" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -72,7 +75,8 @@
         android:background="@drawable/edittext_shape"
         android:ems="10"
         android:height="30dp"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColor="#FFFFFF" />
     
     <Button
         android:id="@+id/btnLogin"
