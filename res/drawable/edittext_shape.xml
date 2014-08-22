@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">   
     <!--圆角-->  
     <corners  
-        android:radius="1dp"/>  
+        android:radius="3dp"/>  
     <!--实心-->  
     <solid  
         android:color="#FFFFFF"/>  
@@ -12,4 +12,9 @@
         android:color="#FFFFFF"/>  
     <!--渐变-->  
     <gradient/>  
+    <padding
+        android:left="10dp"
+       	android:right="10dp" 
+       	android:top="5dp"
+       	android:bottom="5dp"/>
 </shape>

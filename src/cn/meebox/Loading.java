@@ -1,20 +1,15 @@
 package cn.meebox;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.HttpEntity;
+import java.io.IOException;
+
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.client.HttpClients;
 
 import cn.meebox.util.SystemUiHider;
 import android.annotation.TargetApi;
@@ -24,7 +19,9 @@ import android.net.ParseException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +37,10 @@ import android.widget.Toast;
 public class Loading extends Activity {
 	private EditText login_username;
 	private EditText login_password;
-	private Handler handler = null; 
+	private Button btnLogin;
+
+	MyHandler myHandler;
+	
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -67,108 +67,80 @@ public class Loading extends Activity {
 	/**
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.loading);
 		
-		Button btnLogin = (Button)findViewById(R.id.btnLogin);//获取按钮资源    
+		myHandler = new MyHandler();
+		
+		btnLogin = (Button)findViewById(R.id.btnLogin);//获取按钮资源    
 		btnLogin.setOnClickListener(new Button.OnClickListener(){//创建监听    
             public void onClick(View v) {    
-            	login();
+            	MyThread m = new MyThread();
+            	new Thread(m).start();
             }    
-  
         });  
-		
-		login_username=(EditText)findViewById(R.id.etUsername);
-        login_password=(EditText)findViewById(R.id.etPassword);
-        
-        handler = new Handler() {  
-            public void handleMessage(Message msg) {  
-                super.handleMessage(msg);  
-                if (msg.what == 0) {  
-                    txtResult.append("\nBegin test >>\n");  
-                } else if (msg.what == 1) {  
-                    txtResult.append(msg.obj.toString());  
-                } else if (msg.what == 2) {  
-                    txtResult.append("\n<<End test\n");  
-                }  
-            }  
-        };  
 	}
 	
-	private void login(){
-        String httpUrl="http://www.baidu.com";
-        HttpPost httpRequest=new HttpPost(httpUrl);
-        List<NameValuePair> params=new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("username",login_username.getText().toString().trim()));
-        params.add(new BasicNameValuePair("password",login_password.getText().toString().trim()));
-        HttpEntity httpentity = null;
-        try {
-            httpentity = new UrlEncodedFormEntity(params,"utf8");
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+	class MyHandler extends Handler {
+		public MyHandler(){ }
+ 
+		public MyHandler(Looper L) {
+            super(L);
         }
-        httpRequest.setEntity(httpentity);
-        HttpClient httpclient=new DefaultHttpClient();
-        HttpResponse httpResponse = null;
-        try {
-            httpResponse = httpclient.execute(httpRequest);
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        if(httpResponse.getStatusLine().getStatusCode()==200)
-        {
-            String strResult = null;
-            try {
-                strResult = EntityUtils.toString(httpResponse.getEntity());
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+		
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            Log.d("MyHandler", "handleMessage......");
+            super.handleMessage(msg);
+            // 此处可以更新UI
+            
+            Bundle b = msg.getData();
+            
+            int httpcode = b.getInt("httpcode");
+            
+            if(httpcode == 200){
+            	Intent i = new Intent(Loading.this, MainActivity.class);
+            	startActivity(i);
             }
-            Toast.makeText(Loading.this, strResult, Toast.LENGTH_SHORT).show();
-            Intent intent=new Intent(Loading.this, MainActivity.class);
-            startActivity(intent);
+            /*
+            Loading.this.login_username.setText(color);
+            */
         }
-        else
-        {
-            Toast.makeText(Loading.this, "登录失败！", Toast.LENGTH_SHORT).show();
-        }
-        
-        
-        new Thread(new Runnable() {  
-            @Override  
-            public void run() {  
-                Message m = new Message();  
-                m.what = 0;  
-                handler.sendMessage(m);  
-                //  
-                m = new Message();  
-                m.what = 1;  
-                String url = "http://www.baidu.com/";  
-                try {  
-                    m.obj = Jsoup.connect(url).get().toString();  
-                } catch (Exception e) {  
-                    e.printStackTrace();  
-                    // m.obj = e.getMessage();  
-                }  
-                handler.sendMessage(m);  
-                //  
-                m = new Message();  
-                m.what = 2;  
-                handler.sendMessage(m);  
-            }  
-        }).start();
-         
     }
+
+	class MyThread implements Runnable {
+		public void run() {
+			
+			Log.d("thread:", "myThread");
+			Message msg = new Message();
+			Bundle b = new Bundle();// 存放数据
+			
+			String uri = "http://www.baidu.com/";
+			
+			HttpClient httpClient = new DefaultHttpClient(); 
+			
+			//CloseableHttpClient httpclient = HttpClients.createDefault();
+			
+	        HttpGet httpget = new HttpGet(uri);
+	        
+	        HttpResponse response;
+			try {
+				response = httpClient.execute(httpget);
+				b.putInt("httpcode", response.getStatusLine().getStatusCode());
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+			msg.setData(b);
+			Loading.this.myHandler.sendMessage(msg); // 向Handler发送消息,更新UI
+		}
+	}
 }
