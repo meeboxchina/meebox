@@ -80,48 +80,23 @@
         android:textSize="15sp" />
     
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="Login" />
+        android:text="Sign Up" />
 
     <TextView
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnLogin"
+        android:layout_above="@+id/btnRegist"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="68dp"
         android:text="MeeBox 安全云存储"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="12sp" />
-
-    <Button
-        android:id="@+id/btnRegist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etPassword"
-        android:layout_marginTop="38dp"
-        android:layout_toLeftOf="@+id/etPassword"
-        android:background="@drawable/rimless_shape"
-        android:text="新用户注册"
-        android:textColor="#E0E0E0"
-        android:textSize="12sp" />
-
-    <Button
-        android:id="@+id/bthForgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnRegist"
-        android:layout_alignBottom="@+id/btnRegist"
-        android:layout_alignRight="@+id/etPassword"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/rimless_shape"
-        android:text="忘记密码"
-        android:textColor="#E0E0E0"
         android:textSize="12sp" />
     
 </RelativeLayout>

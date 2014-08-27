@@ -7,5 +7,7 @@
     <string name="meebox">MEEBOX</string>
     <string name="title_activity_main">MeeBox</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_regist">RegistActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
