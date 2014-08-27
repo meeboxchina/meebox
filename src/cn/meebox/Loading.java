@@ -1,7 +1,10 @@
 package cn.meebox;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +19,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.meebox.util.SystemUiHider;
 import android.annotation.TargetApi;
@@ -41,12 +47,14 @@ import android.widget.Toast;
  * @see SystemUiHider
  */
 public class Loading extends Activity {
-	private EditText login_username;
-	private EditText login_password;
+	private android.widget.EditText login_username;
+	private android.widget.EditText login_password;
 	private Button btnLogin;
 	private Button btnRegist;
 	private Button btnForgot;
 	
+	private String username;
+	private String password;
 
 	MyHandler myHandler;
 	
@@ -84,11 +92,26 @@ public class Loading extends Activity {
 		
 		myHandler = new MyHandler();
 		
+		login_username = (EditText)findViewById(R.id.etUsername);
+		login_password = (EditText)findViewById(R.id.etPassword);
+		
+		
 		btnLogin = (Button)findViewById(R.id.btnLogin);//登录按钮  
 		btnLogin.setOnClickListener(new Button.OnClickListener(){//创建监听    
-            public void onClick(View v) {    
-            	MyThread m = new MyThread();
-            	new Thread(m).start();
+            public void onClick(View v) {
+            	
+            	username = login_username.getText().toString();
+        		password = login_password.getText().toString();
+        		
+            	//Toast.makeText(getApplicationContext(), username, Toast.LENGTH_SHORT).show();
+            	if((username.length()<4 || password.length()<4)){
+            		//Toast.makeText(getApplicationContext(), "Input Error, Please input again.", Toast.LENGTH_SHORT).show();
+            		login_username.setFocusable(true);
+            		Toast.makeText(getApplicationContext(), "Input Error, Please input your username and password again.", Toast.LENGTH_SHORT).show();
+            	}else{
+            		MyThread m = new MyThread();
+                	new Thread(m).start();
+            	}
             }    
         }); 
 		
@@ -111,6 +134,10 @@ public class Loading extends Activity {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
+        	String authentication = "";
+        	int uid = 0;
+        	String sid = "";
+        	
             Log.d("MyHandler", "handleMessage......");
             super.handleMessage(msg);
             // 此处可以更新UI
@@ -120,10 +147,31 @@ public class Loading extends Activity {
             int httpcode = b.getInt("httpcode");
             String json = b.getString("json");
             
-            if(httpcode == 200){
-            	Toast.makeText(getApplicationContext(), json, Toast.LENGTH_SHORT).show();
+            try {
+				JSONObject jsonObj = new JSONObject(json);
+				authentication = jsonObj.getString("authentication").trim();
+				sid = jsonObj.getString("sid").trim();
+				uid = jsonObj.getInt("uid");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+            //Toast.makeText(getApplicationContext(),  authentication , Toast.LENGTH_LONG).show();
+    	    
+            //Log.d("response", json);
+            
+            //Toast.makeText(getApplicationContext(),  sid, Toast.LENGTH_SHORT).show();
+            if(authentication.equals("successfully")){
+            	//Toast.makeText(getApplicationContext(),  "login successfully.", Toast.LENGTH_SHORT).show();
+            	//Toast.makeText(getApplicationContext(),  "Entering main activity...", Toast.LENGTH_SHORT).show();
             	Intent i = new Intent(Loading.this, MainActivity.class);
+            	i.putExtra("username", uid);
+            	i.putExtra("sid", sid);
             	startActivity(i);
+            	
+            }else{
+            	Toast.makeText(getApplicationContext(),  "Login Failed. Please check your account", Toast.LENGTH_SHORT).show();
             }
             /*
             Loading.this.login_username.setText(color);
@@ -133,6 +181,7 @@ public class Loading extends Activity {
 
 	class MyThread implements Runnable {
 		public void run() {
+			/*
 			String password = null;
 			try {
 				MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
@@ -150,13 +199,11 @@ public class Loading extends Activity {
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
+			*/
 			
 			Log.d("thread:", "myThread");
 			Message msg = new Message();
 			Bundle b = new Bundle();// 存放数据
-			
-			
-			
 			
 			String uri = "http://meebox.cn/login";
 			
@@ -169,7 +216,7 @@ public class Loading extends Activity {
 	        
 	        HttpPost httppost = new HttpPost(uri);   
 	        try {
-				StringEntity reqEntity = new StringEntity("username=sunyu&password=sunyu");
+				StringEntity reqEntity = new StringEntity("username=" + username +"&password=" + password);
 				reqEntity.setContentType("application/x-www-form-urlencoded");   
 		        // 设置请求的数据   
 		        httppost.setEntity(reqEntity);   
@@ -182,7 +229,16 @@ public class Loading extends Activity {
 		        
 		        HttpEntity entity = response.getEntity(); 
 		        
-		        json = entity.toString();
+		        InputStream in = entity.getContent();  
+		        
+		        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		        StringBuffer sb = new StringBuffer(); 
+		        String line;
+		        while ((line = br.readLine()) != null) {
+		        	sb.append(line);              
+		        }
+		        
+		        json = sb.toString();
 		        
 		        b.putInt("httpcode", httpcode);
 		        b.putString("json", json);
@@ -197,7 +253,6 @@ public class Loading extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	        
 	     
 			msg.setData(b);
 			Loading.this.myHandler.sendMessage(msg); // 向Handler发送消息,更新UI

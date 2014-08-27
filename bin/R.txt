@@ -246,7 +246,6 @@ int drawable momo1 0x7f02005c
 int drawable rimless_shape 0x7f02005d
 int id ImageView02 0x7f050053
 int id ImageView03 0x7f050054
-int id ImageView04 0x7f050055
 int id TextView02 0x7f05004f
 int id action_bar 0x7f05001c
 int id action_bar_activity_content 0x7f050015
@@ -323,6 +322,7 @@ int id showTitle 0x7f050006
 int id split_action_bar 0x7f05001e
 int id submit_area 0x7f050039
 int id tabMode 0x7f050002
+int id textView1 0x7f050055
 int id title 0x7f05002b
 int id top_action_bar 0x7f050020
 int id tvLogo 0x7f050049
