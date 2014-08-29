@@ -165,7 +165,7 @@ public class Loading extends Activity {
             if(authentication.equals("successfully")){
             	//Toast.makeText(getApplicationContext(),  "login successfully.", Toast.LENGTH_SHORT).show();
             	//Toast.makeText(getApplicationContext(),  "Entering main activity...", Toast.LENGTH_SHORT).show();
-            	Intent i = new Intent(Loading.this, MainActivity.class);
+            	Intent i = new Intent(Loading.this, FileActivity.class);
             	i.putExtra("username", uid);
             	i.putExtra("sid", sid);
             	startActivity(i);

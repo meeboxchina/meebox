@@ -30,6 +30,11 @@
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
+            android:name=".FileActivity"
+            android:label="@string/title_activity_main" 
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
             android:name=".RegActivity"
             android:label="@string/title_activity_reg"
             android:windowSoftInputMode="adjustResize|stateHidden" >
