@@ -34,6 +34,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -84,6 +86,50 @@ public class Loading extends Activity {
 	/**
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // 调用父类方法来加入系统菜单
+	    // 虽然目前android还没有系统菜单，但是为了兼容到以后的版本，最好加上
+	super.onCreateOptionsMenu(menu);
+	   
+	    // 添加菜单项（多种方式）
+	    // 1.直接指定标题
+	    menu.add("设置1");
+	    menu.add("设置2");
+	    menu.add("设置3");
+	    menu.add("设置4");
+	    menu.add("设置5");
+	    menu.add("设置6");
+	    // 2.通过资源指定标题
+	    //menu.add(R.string.menuitem2);
+	    // 3.显示指定菜单项的组号、ID、排序号、标题
+	    menu.add(
+	            1,            //组号
+	            Menu.FIRST, //唯一的ID号
+	            Menu.FIRST, //排序号
+	"菜单项3"); //标题
+	   
+	    // 如果希望显示菜单，请返回true
+	    return	true;
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	    //响应每个菜单项(通过菜单项的ID)
+	case 1:
+	        Toast.makeText(getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
+	        break;
+	    default:
+	    	Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
+	        //对没有处理的事件，交给父类来处理
+	return super.onOptionsItemSelected(item);
+	    }
+	    //返回true表示处理完菜单项的事件，不需要将该事件继续传播下去了
+	return true;
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

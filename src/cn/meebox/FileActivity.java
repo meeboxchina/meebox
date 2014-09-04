@@ -20,8 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.meebox.Loading.MyThread;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,16 +31,33 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.baidu.oauth.BaiduOAuth;
+import com.baidu.oauth.BaiduOAuth.BaiduOAuthResponse;
+import com.baidu.oauth.BaiduOAuth.OAuthListener;
 
 public class FileActivity extends Activity {
 	private int uid;
 	String sid;
 	
 	MyHandler myHandler;
+	
+	private final String mbApiKey = "IGTilpTos6IgaUEZYc3wBkGK";
+	private Button getAccessToken;//添加响应按钮
+	private Button getList;//添加响应按钮
+	
+	String BaiDuAccessToken = "";
+	String BaiDuUsername = "";
+	
+	private Button mButton;
+    private PopupWindow mPopupWindow;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +72,75 @@ public class FileActivity extends Activity {
         MyThread m = new MyThread();
     	new Thread(m).start();
         
+    	getAccessToken = (Button)findViewById(R.id.getAccessToken);//响应按钮类
+
+    	getAccessToken.setOnClickListener(new Button.OnClickListener(){//创建监听    
+    		@Override
+            public void onClick(View v) {
+    			BaiduOAuth oauthClient = new BaiduOAuth();
+    			oauthClient.startOAuth(FileActivity.this, mbApiKey, new String[]{"basic"},new BaiduOAuth.OAuthListener() {
+                    @Override
+                    public void onException(String msg) {
+                        Toast.makeText(getApplicationContext(), "Login failed " + msg, Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onComplete(BaiduOAuthResponse response) {
+                        if(null != response){
+                            BaiDuAccessToken = response.getAccessToken();
+                            BaiDuUsername = response.getUserName();
+                            
+                            
+                            SharedPreferences.Editor meebox = getSharedPreferences("meebox", 0).edit();  
+                            meebox.putString("BaiDuAccessToken",BaiDuAccessToken);  
+                            meebox.putString("BaiDuUsername",BaiDuUsername);  
+                            meebox.commit();
+                            
+                            BaiduGetListThread m = new BaiduGetListThread();
+                        	new Thread(m).start();
+                            //Toast.makeText(getApplicationContext(), "Token: " + BaiDuaccessToken + "    User name:" + response.getUserName(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getApplicationContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }   
+        });
+    	
+    	getList = (Button)findViewById(R.id.getList);//响应按钮类
+
+    	getList.setOnClickListener(new Button.OnClickListener(){//创建监听    
+    		@Override
+            public void onClick(View v) {
+
+                SharedPreferences meebox = getSharedPreferences("meebox", 0);  
+                String BaiDuList = meebox.getString("BaiDuList", null);  
+                String BaiDuAccessToken = meebox.getString("BaiDuAccessToken", null);  
+                String uri = meebox.getString("uri", null);  
+                Toast.makeText(getApplicationContext(), BaiDuAccessToken, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), uri, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), BaiDuList, Toast.LENGTH_SHORT).show();
+    		}
+    	});
+    	
+    	
+    	
+    	View popupView = getLayoutInflater().inflate(R.layout.popup, null);
+
+        mPopupWindow = new PopupWindow(popupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+
+        mButton = (Button) findViewById(R.id.btn_test_popupwindow);
+        mButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mPopupWindow.showAsDropDown(v);
+            }
+        });
 	}
 	
 	
@@ -94,6 +182,8 @@ public class FileActivity extends Activity {
         }
     }
 
+	
+	
 	
 	class MyThread implements Runnable {
 		public void run() {
@@ -143,4 +233,66 @@ public class FileActivity extends Activity {
 			FileActivity.this.myHandler.sendMessage(msg);
 		}
 	}
+	
+	
+	class BaiduGetListThread implements Runnable {
+		public void run() {
+			Log.d("thread:", "BaiduThread");
+			Message msg = new Message();
+			Bundle b = new Bundle();// 存放数据
+			
+			SharedPreferences meebox = getSharedPreferences("meebox", 0);  
+            String BaiDuAccessToken = meebox.getString("BaiDuAccessToken", null);  
+             
+			String uri = "https://pcs.baidu.com/rest/2.0/pcs/quota?method=info&access_token=" + BaiDuAccessToken;
+			
+			//HttpClient httpClient = new DefaultHttpClient(); 
+			
+			DefaultHttpClient httpClient = new DefaultHttpClient();   
+			//CloseableHttpClient httpclient = HttpClients.createDefault();
+		
+	        HttpGet httpget = new HttpGet(uri);
+	        
+	        try {
+
+	        	HttpResponse response = httpClient.execute(httpget);
+	        	
+		        HttpEntity entity = response.getEntity(); 
+		        
+		        InputStream in = entity.getContent();  
+		        
+		        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		        String json = "";
+		        String line;
+		        while ((line = br.readLine()) != null) {
+		        	json += line;
+		        }
+		        
+		        b.putString("url",json);
+		        b.putInt("httpcode",response.getStatusLine().getStatusCode());
+		        
+		        
+		        SharedPreferences.Editor meeboxEditor = getSharedPreferences("meebox", 0).edit();  
+		        meeboxEditor.putString("BaiDuList",json);  
+		        meeboxEditor.putString("uri",uri);
+		        meeboxEditor.commit();
+	            
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	     
+	        msg.setData(b);
+
+	        
+		}
+	}
+	
+	
 }
