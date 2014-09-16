@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#FFFFFF">
 
     <RelativeLayout 
     android:layout_width="fill_parent"
@@ -27,10 +28,8 @@
         android:layout_marginRight="15dp"
         android:background="#00000000" 
         android:src="@drawable/menubutton3" />
-
-    
-
 	</RelativeLayout>
 
+    
 
 </LinearLayout>

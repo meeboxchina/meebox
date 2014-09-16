@@ -126,21 +126,8 @@ public class FileActivity extends Activity {
     	
     	
     	
-    	View popupView = getLayoutInflater().inflate(R.layout.popup, null);
-
-        mPopupWindow = new PopupWindow(popupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-        mPopupWindow.setTouchable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-
-        mButton = (Button) findViewById(R.id.btn_test_popupwindow);
-        mButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.showAsDropDown(v);
-            }
-        });
+    	Intent i = new Intent(FileActivity.this, TestActivity.class);
+    	startActivity(i);
 	}
 	
 	

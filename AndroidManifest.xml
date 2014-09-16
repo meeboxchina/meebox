@@ -26,12 +26,12 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" 
+            android:label="@string/title_activity_main"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name=".FileActivity"
-            android:label="@string/title_activity_main" 
+            android:label="@string/title_activity_main"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
@@ -47,8 +47,17 @@
         <activity
             android:name=".RegistActivity"
             android:label="@string/title_activity_regist"
-            android:windowSoftInputMode="adjustResize|stateHidden" 
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name=".TestActivity"
+            android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name=".MeeboxActivity"
+            android:label="@string/title_activity_meebox" 
+            android:theme="@android:style/Theme.NoTitleBar">
         </activity>
     </application>
 
@@ -66,9 +75,7 @@
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    
 </manifest>
